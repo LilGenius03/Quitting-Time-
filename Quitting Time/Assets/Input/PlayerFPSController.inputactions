@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Object Interact",
+                    "name": "PlayerInteract",
                     "type": "Button",
                     "id": "9938e8ff-3329-4572-ac5a-1c19a13e1a0b",
                     "expectedControlType": "",
@@ -114,7 +114,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Object Interact",
+                    "action": "PlayerInteract",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

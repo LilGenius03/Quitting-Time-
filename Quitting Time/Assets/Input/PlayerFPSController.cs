@@ -46,7 +46,7 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Object Interact"",
+                    ""name"": ""PlayerInteract"",
                     ""type"": ""Button"",
                     ""id"": ""9938e8ff-3329-4572-ac5a-1c19a13e1a0b"",
                     ""expectedControlType"": """",
@@ -136,7 +136,7 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Object Interact"",
+                    ""action"": ""PlayerInteract"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -759,7 +759,7 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
-        m_Player_ObjectInteract = m_Player.FindAction("Object Interact", throwIfNotFound: true);
+        m_Player_PlayerInteract = m_Player.FindAction("PlayerInteract", throwIfNotFound: true);
         m_Player_Hide = m_Player.FindAction("Hide", throwIfNotFound: true);
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         // UI
@@ -843,7 +843,7 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
-    private readonly InputAction m_Player_ObjectInteract;
+    private readonly InputAction m_Player_PlayerInteract;
     private readonly InputAction m_Player_Hide;
     private readonly InputAction m_Player_Sprint;
     public struct PlayerActions
@@ -852,7 +852,7 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
         public PlayerActions(@PlayerFPSController wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
-        public InputAction @ObjectInteract => m_Wrapper.m_Player_ObjectInteract;
+        public InputAction @PlayerInteract => m_Wrapper.m_Player_PlayerInteract;
         public InputAction @Hide => m_Wrapper.m_Player_Hide;
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -870,9 +870,9 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
-            @ObjectInteract.started += instance.OnObjectInteract;
-            @ObjectInteract.performed += instance.OnObjectInteract;
-            @ObjectInteract.canceled += instance.OnObjectInteract;
+            @PlayerInteract.started += instance.OnPlayerInteract;
+            @PlayerInteract.performed += instance.OnPlayerInteract;
+            @PlayerInteract.canceled += instance.OnPlayerInteract;
             @Hide.started += instance.OnHide;
             @Hide.performed += instance.OnHide;
             @Hide.canceled += instance.OnHide;
@@ -889,9 +889,9 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
-            @ObjectInteract.started -= instance.OnObjectInteract;
-            @ObjectInteract.performed -= instance.OnObjectInteract;
-            @ObjectInteract.canceled -= instance.OnObjectInteract;
+            @PlayerInteract.started -= instance.OnPlayerInteract;
+            @PlayerInteract.performed -= instance.OnPlayerInteract;
+            @PlayerInteract.canceled -= instance.OnPlayerInteract;
             @Hide.started -= instance.OnHide;
             @Hide.performed -= instance.OnHide;
             @Hide.canceled -= instance.OnHide;
@@ -1082,7 +1082,7 @@ public partial class @PlayerFPSController: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
-        void OnObjectInteract(InputAction.CallbackContext context);
+        void OnPlayerInteract(InputAction.CallbackContext context);
         void OnHide(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
     }

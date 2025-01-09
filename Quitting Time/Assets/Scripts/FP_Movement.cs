@@ -19,7 +19,7 @@ public class FP_Movement : MonoBehaviour
     private InputAction Move;
     private InputAction Look;
     private InputAction hide;
-    private InputAction interact;
+    //private InputAction interact;
     private InputAction sprint;
 
     private bool isHidden;
@@ -81,14 +81,14 @@ public class FP_Movement : MonoBehaviour
         Look.Enable();
 
         hide = PlayerControls.Player.Hide;
-        interact = PlayerControls.Player.ObjectInteract;
+        //interact = PlayerControls.Player.ObjectInteract;
         sprint = PlayerControls.Player.Sprint;
 
         hide.Enable();
         hide.performed += Hide;
 
-        interact.Enable();
-        interact.performed += Interact;
+        //interact.Enable();
+        //interact.performed += Interact;
 
         sprint.Enable();
         sprint.performed += Sprint;
@@ -102,7 +102,7 @@ public class FP_Movement : MonoBehaviour
         Move.Disable();
         hide.Disable();
         Look.Disable();
-        interact.Disable();
+        //interact.Disable();
         sprint.Disable();
         isHidden = false;
     }
@@ -117,10 +117,10 @@ public class FP_Movement : MonoBehaviour
         }
     }
 
-    private void Interact(InputAction.CallbackContext context)
+    /*private void Interact(InputAction.CallbackContext context)
     {
         Debug.Log("Interacted");
-    }
+    }*/
 
     private void Sprint(InputAction.CallbackContext context)
     {
