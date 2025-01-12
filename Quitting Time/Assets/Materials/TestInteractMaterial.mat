@@ -98,7 +98,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DitherSize: 27.2
+    - _DitherSize: 51.8
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EdgeThreshold: 0.5
