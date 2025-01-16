@@ -5,7 +5,6 @@ Shader "Custom/GameBoyColorDither"
         _MainColor1 ("Color 1", Color) = (0.25, 0.39, 0.31, 1)
         _MainColor2 ("Color 2", Color) = (0.44, 0.53, 0.50, 1)
         _MainColor3 ("Color 3", Color) = (0.72, 0.75, 0.53, 1)
-        _MainColor4 ("Color 4", Color) = (0.94, 0.97, 0.72, 1)
         _DitherTexture ("Dither Pattern", 2D) = "white" {}
     }
 
@@ -26,7 +25,6 @@ Shader "Custom/GameBoyColorDither"
             fixed4 _MainColor1;
             fixed4 _MainColor2;
             fixed4 _MainColor3;
-            fixed4 _MainColor4;
             sampler2D _DitherTexture;
 
             // Structs
@@ -59,37 +57,37 @@ Shader "Custom/GameBoyColorDither"
             // Dithering Function
             float Dither(float2 uv, float brightness)
             {
-                float ditherValue = tex2D(_DitherTexture, uv).r;
+                // Dithering pattern lookup
+                float ditherValue = tex2D(_DitherTexture, uv * 1).r;  // Scale down for subtle dithering
                 return brightness + ditherValue - 0.5;
             }
 
             // Fragment Shader
-            fixed4 frag (v2f i) : SV_Target
-            {
-                // Basic lighting
-                float3 normal = normalize(i.worldNormal);
-                float brightness = saturate(dot(normal, float3(0, 1, 0)));
+fixed4 frag(v2f i) : SV_Target
+{
+    // Basic lighting
+    float3 normal = normalize(i.worldNormal);
+    float brightness = saturate(dot(normal, float3(0, 1, 0)));
 
-                // Apply dithering
-                float ditheredValue = Dither(i.screenPos.xy * _ScreenParams.xy / 4, brightness);
+    // Apply dithering
+    float ditheredValue = Dither(i.screenPos.xy * _ScreenParams.xy / 4, brightness);
 
-                // Color selection based on brightness
-                fixed4 color;
-                if (ditheredValue < 0.25)
-                    color = _MainColor1;
-                else if (ditheredValue < 0.5)
-                    color = _MainColor2;
-                else if (ditheredValue < 0.75)
-                    color = _MainColor3;
-                else
-                    color = _MainColor4;
+    // Color selection based on brightness
+    fixed4 color;
+    if (ditheredValue < 0.40)  // Dark
+        color = _MainColor1;
+    else if (ditheredValue < 0.80)  // Midtone
+        color = _MainColor2;
+    else  // Highlight
+        color = _MainColor3;
 
-                return color;
-            }
+    return color;
+}
             ENDCG
         }
     }
 
     FallBack "Diffuse"
 }
+
 
