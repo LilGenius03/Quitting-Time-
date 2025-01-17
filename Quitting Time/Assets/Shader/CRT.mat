@@ -100,14 +100,16 @@ Material:
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _Blur_Offset: 0.00118
+    - _Blur_Offset: 0.001341
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _ColorResolution: 2
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _DitherSpread: -0.5
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
@@ -118,10 +120,10 @@ Material:
     - _Number_of_Scan_lines: 400
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PixelSize: 190
+    - _PixelSize: 200
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ScanLines_Speed: 0.00903
+    - _ScanLines_Speed: 0.01
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -132,7 +134,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 2.9411125, g: 1.6786537, b: 1.6786537, a: 1}
+    - _Color: {r: 5.882225, g: 3.3573074, b: 3.3573074, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
