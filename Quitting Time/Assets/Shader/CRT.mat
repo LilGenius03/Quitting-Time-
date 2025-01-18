@@ -104,7 +104,7 @@ Material:
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ColorResolution: 2
+    - _ColorResolution: 8
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -120,7 +120,7 @@ Material:
     - _Number_of_Scan_lines: 400
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PixelSize: 200
+    - _PixelSize: 150
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _ScanLines_Speed: 0.01
@@ -134,7 +134,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 5.882225, g: 3.3573074, b: 3.3573074, a: 1}
+    - _Color: {r: 3.4994678, g: 3.4994678, b: 3.4994678, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []

@@ -12,7 +12,7 @@ public class FP_Movement : MonoBehaviour
     public float SprintTime = 1.5f;
 
     private Vector3 MoveDirection = Vector3.zero;
-    private Rigidbody rb;
+    public Rigidbody rb;
 
     public Transform playerCamera;
     public float lookSensitivity = 100f;
@@ -36,7 +36,13 @@ public class FP_Movement : MonoBehaviour
     private bool isSprinting;
     private float sprintTimer;
 
+    private Transform hidingSpot;
+    public float mouseMovementThreshold = 10f;
+    private Vector2 lastMousePosition;
+
+
     public float verticalRotation = 0f;
+    private float detectionRisk = 0f;
     public float walkBobSpeed = 14f;
     public float walkBobAmount = 0.05f;
     public float SprintBobSpeed = 18f;
@@ -63,8 +69,10 @@ public class FP_Movement : MonoBehaviour
 
     void Update()
     {
-        MoveDirection = Move.ReadValue<Vector3>();
-        if(MoveDirection.magnitude > 0)
+        Vector2 moveInput = Move.ReadValue<Vector2>();
+        MoveDirection = new Vector3(moveInput.x, 0, moveInput.y);
+
+        if (MoveDirection.magnitude > 0)
         {
             isBobbing = true;
         }
@@ -82,6 +90,17 @@ public class FP_Movement : MonoBehaviour
             {
                 StopSprinting();
             }
+        }
+
+        if(!isHidden)
+        {
+            HandleMovement();
+            HandleLook();
+        }
+        else
+        {
+            HandleHidingLook();
+            Debug.Log(detectionRisk);
         }
 
         Vector2 lookInput = Look.ReadValue<Vector2>();
@@ -127,7 +146,46 @@ public class FP_Movement : MonoBehaviour
         }
     }
 
+    private void HandleMovement()
+    {
+        Vector2 moveInput = Move.ReadValue<Vector2>();
+        Vector3 forwardMovement = transform.forward * moveInput.y;
+        Vector3 rightMovement = transform.right * moveInput.x;
 
+        rb.linearVelocity = (forwardMovement + rightMovement) * moveSpeed + new Vector3(0, rb.linearVelocity.y, 0);
+    }
+
+    void HandleLook()
+    {
+        Vector2 lookInput = Look.ReadValue<Vector2>();
+        float mouseX = lookInput.x * lookSensitivity * Time.deltaTime;
+        float mouseY = lookInput.y * lookSensitivity * Time.deltaTime;
+
+        transform.Rotate(Vector3.up * mouseX);
+
+        verticalRotation -= mouseY;
+        verticalRotation = Mathf.Clamp(verticalRotation, -maxLookAngle, maxLookAngle);
+        playerCamera.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
+    }
+
+    private void HandleHidingLook()
+    {
+        Vector2 lookInput = Look.ReadValue<Vector2>();
+        float mouseX = lookInput.x * lookSensitivity * Time.deltaTime;
+        float mouseY = lookInput.y * lookSensitivity * Time.deltaTime;
+
+        detectionRisk += (Mathf.Abs(mouseX) + Mathf.Abs(mouseY)) * Time.deltaTime;
+
+        if (Mathf.Abs(mouseX) + Mathf.Abs(mouseY) > mouseMovementThreshold)
+        {
+            ExitHiding();
+            
+        }
+
+        verticalRotation -= mouseY;
+        verticalRotation = Mathf.Clamp(verticalRotation, -maxLookAngle, maxLookAngle);
+        playerCamera.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
+    }
 
     private void OnEnable()
     {
@@ -161,15 +219,20 @@ public class FP_Movement : MonoBehaviour
         //interact.Disable();
         sprint.Disable();
         isHidden = false;
+        hide.performed -= Hide;
     }
 
     private void Hide(InputAction.CallbackContext context)
     {
-        Debug.Log("Hidden");
+        
 
-        if (!isHidden)
+        if (isHidden)
         {
-            Debug.Log("is not Hidden");
+            ExitHiding();
+        }
+        else
+        {
+            EnterHiding();
         }
     }
 
@@ -255,6 +318,39 @@ public class FP_Movement : MonoBehaviour
             lastFootstepTime = Time.time;
         }
         
+    }
+
+    private void EnterHiding()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 2f, LayerMask.GetMask("HidingSpot"));
+        if (colliders.Length > 0)
+        {
+            hidingSpot = colliders[0].transform;
+            playerCamera.position = hidingSpot.position;
+
+            rb.isKinematic = true;
+
+            isHidden = true;
+            detectionRisk = 0f; 
+            Debug.Log("Player is now hiding!");
+        }
+        else
+        {
+            Debug.Log("No hiding spot nearby!");
+        }
+    }
+
+    private void ExitHiding()
+    {
+        if (isHidden)
+        {
+            playerCamera.localPosition = Vector3.zero;
+
+            rb.isKinematic = false;
+
+            isHidden = false;
+            Debug.Log("Player exited hiding!");
+        }
     }
 
 }
