@@ -51,6 +51,8 @@ public class FP_Movement : MonoBehaviour
     private float bobOffset = 0f;
     private bool isBobbing = false;
 
+    public GameObject PressH;
+
     private void Awake()
     {
         PlayerControls = new PlayerFPSController();
@@ -63,6 +65,7 @@ public class FP_Movement : MonoBehaviour
         isHidden = false;
         isSprinting = false;
         sprintTimer = SprintTime;
+        PressH.SetActive(false); 
 
         Cursor.lockState = CursorLockMode.Locked;
     }
