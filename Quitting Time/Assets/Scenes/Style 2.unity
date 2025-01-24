@@ -1245,6 +1245,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5160811d77c38843b632e9e1ce31de7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1498030520
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1498030521}
+  - component: {fileID: 1498030522}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1498030521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498030520}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1498030522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1498030520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: c82459e6f35568047a98d77d15f28384, type: 2}
 --- !u!1 &1526657618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1701,7 +1750,7 @@ GameObject:
   - component: {fileID: 1935430763}
   m_Layer: 6
   m_Name: Hiding spot
-  m_TagString: Untagged
+  m_TagString: HidingSpot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2773,6 +2822,10 @@ PrefabInstance:
       propertyPath: 'InteractButtons.Array.data[1]'
       value: 
       objectReference: {fileID: 1526657618}
+    - target: {fileID: 2912576775963926926, guid: fe8dace2a1369734bb86f8c73a606c09, type: 3}
+      propertyPath: m_RenderPostProcessing
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2983833944142220899, guid: fe8dace2a1369734bb86f8c73a606c09, type: 3}
       propertyPath: rb
       value: 
@@ -2781,6 +2834,10 @@ PrefabInstance:
       propertyPath: PressH
       value: 
       objectReference: {fileID: 1526657618}
+    - target: {fileID: 2983833944142220899, guid: fe8dace2a1369734bb86f8c73a606c09, type: 3}
+      propertyPath: volume
+      value: 
+      objectReference: {fileID: 1498030522}
     - target: {fileID: 2983833944142220899, guid: fe8dace2a1369734bb86f8c73a606c09, type: 3}
       propertyPath: lookSensitivity
       value: 70
@@ -2831,7 +2888,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8429570559501696980, guid: fe8dace2a1369734bb86f8c73a606c09, type: 3}
       propertyPath: m_Depth
-      value: 57.23
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 8903882869558177634, guid: fe8dace2a1369734bb86f8c73a606c09, type: 3}
       propertyPath: m_Name
@@ -3327,3 +3384,4 @@ SceneRoots:
   - {fileID: 597743592}
   - {fileID: 1770075602}
   - {fileID: 82266964}
+  - {fileID: 1498030521}

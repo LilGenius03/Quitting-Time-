@@ -3,9 +3,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.Rendering.Universal;
 
 public class FP_Movement : MonoBehaviour
 {
+
     public PlayerFPSController PlayerControls;
     public int moveSpeed = 3;
     public int SprintSpeed = 6;
@@ -52,6 +56,9 @@ public class FP_Movement : MonoBehaviour
     private bool isBobbing = false;
 
     public GameObject PressH;
+    public Volume volume;
+
+    private bool isInHidingArea = false;
 
     private void Awake()
     {
@@ -68,6 +75,7 @@ public class FP_Movement : MonoBehaviour
         PressH.SetActive(false); 
 
         Cursor.lockState = CursorLockMode.Locked;
+        volume.profile.components.ForEach(c => Debug.Log(c.GetType().Name));
     }
 
     void Update()
@@ -99,11 +107,31 @@ public class FP_Movement : MonoBehaviour
         {
             HandleMovement();
             HandleLook();
+            if (volume.profile.TryGet(out Vignette vignette))
+            {
+                vignette.intensity.value = 0f;
+                Debug.Log(vignette.intensity.value);
+            }
         }
         else
         {
             HandleHidingLook();
             Debug.Log(detectionRisk);
+            if (volume.profile.TryGet(out Vignette vignette))
+            {
+                vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, detectionRisk, Time.deltaTime * 5f);
+                Debug.Log(vignette.intensity.value);
+            }
+        }
+
+        if (isInHidingArea && !isHidden)
+        {
+            PressH.SetActive(true); 
+        }
+
+        else
+        {
+            PressH.SetActive(false); 
         }
 
         Vector2 lookInput = Look.ReadValue<Vector2>();
@@ -114,31 +142,31 @@ public class FP_Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float currentSpeed = isSprinting ? SprintSpeed : moveSpeed;
+        if (isHidden) return; // Skip movement logic when hiding
 
+        float currentSpeed = isSprinting ? SprintSpeed : moveSpeed;
 
         Vector3 forwardMovement = transform.forward * MoveDirection.z;
         Vector3 rightMovement = transform.right * MoveDirection.x;
 
         rb.linearVelocity = (forwardMovement + rightMovement) * currentSpeed + new Vector3(0, rb.linearVelocity.y, 0);
 
-        if(isBobbing)
+        if (isBobbing)
         {
             playerCamera.localPosition = new Vector3(playerCamera.localPosition.x, bobOffset, playerCamera.localPosition.z);
         }
-
         else
         {
             bobOffset = Mathf.Lerp(bobOffset, 0f, Time.deltaTime * BobbingFadeOut);
         }
 
-
-        if (MoveDirection.magnitude <= 0 && !isBobbing) 
-        { 
-           bobOffset = 0;
+        if (MoveDirection.magnitude <= 0 && !isBobbing)
+        {
+            bobOffset = 0;
         }
+
         string newSurface = GetCurrentSurface();
-        if(newSurface != currentSurface) 
+        if (newSurface != currentSurface)
         {
             currentSurface = newSurface;
         }
@@ -179,10 +207,10 @@ public class FP_Movement : MonoBehaviour
 
         detectionRisk += (Mathf.Abs(mouseX) + Mathf.Abs(mouseY)) * Time.deltaTime;
 
+
         if (Mathf.Abs(mouseX) + Mathf.Abs(mouseY) > mouseMovementThreshold)
         {
             ExitHiding();
-            
         }
 
         verticalRotation -= mouseY;
@@ -325,16 +353,15 @@ public class FP_Movement : MonoBehaviour
 
     private void EnterHiding()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, 2f, LayerMask.GetMask("HidingSpot"));
-        if (colliders.Length > 0)
+        if (isInHidingArea) 
         {
-            hidingSpot = colliders[0].transform;
+            hidingSpot = Physics.OverlapSphere(transform.position, 2f, LayerMask.GetMask("HidingSpot"))[0].transform;
             playerCamera.position = hidingSpot.position;
 
             rb.isKinematic = true;
 
             isHidden = true;
-            detectionRisk = 0f; 
+            detectionRisk = 0f;
             Debug.Log("Player is now hiding!");
         }
         else
@@ -353,6 +380,22 @@ public class FP_Movement : MonoBehaviour
 
             isHidden = false;
             Debug.Log("Player exited hiding!");
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("HidingSpot"))
+        {
+            isInHidingArea = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+       if(other.CompareTag("HidingSpot"))
+        {
+            isInHidingArea = false;
         }
     }
 
