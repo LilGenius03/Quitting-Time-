@@ -133,7 +133,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.24837239, g: 0.15566039, b: 1, a: 1}
-    - _Color: {r: 0.24837239, g: 0.15566039, b: 1, a: 1}
+    - _Color: {r: 0.24837235, g: 0.15566036, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MainColor1: {r: 0.25, g: 0.39, b: 0.31, a: 1}
     - _MainColor2: {r: 0.44, g: 0.53, b: 0.5, a: 1}
