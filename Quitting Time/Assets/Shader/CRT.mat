@@ -117,7 +117,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _Number_of_Scan_lines: 200
+    - _Number_of_Scan_lines: 175
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _PixelSize: 164

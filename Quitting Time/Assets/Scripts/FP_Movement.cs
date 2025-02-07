@@ -24,6 +24,7 @@ public class FP_Movement : MonoBehaviour
 
     public AudioClip[] groundSounds;
     public AudioClip[] stairsSounds;
+    public AudioSource heartbeat;
 
     private AudioSource audioSource;
     private string currentSurface;
@@ -107,6 +108,8 @@ public class FP_Movement : MonoBehaviour
         {
             HandleMovement();
             HandleLook();
+            heartbeat.volume = 0f;
+            heartbeat.pitch = 0f;
             if (volume.profile.TryGet(out Vignette vignette))
             {
                 vignette.intensity.value = 0f;
@@ -117,6 +120,8 @@ public class FP_Movement : MonoBehaviour
         {
             HandleHidingLook();
             Debug.Log(detectionRisk);
+            heartbeat.volume = detectionRisk * 1.5f;
+            heartbeat.pitch = detectionRisk;
             if (volume.profile.TryGet(out Vignette vignette))
             {
                 vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, detectionRisk, Time.deltaTime * 5f);
