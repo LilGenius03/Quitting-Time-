@@ -15,6 +15,13 @@ public class FP_Movement : MonoBehaviour
     public int SprintSpeed = 6;
     public float SprintTime = 1.5f;
 
+    public PlayerHealthValue health;
+    public float healDelay = 5f;
+    public float healRate = 0.5f;
+    private float timeSinceLastDamage;
+    private float maxHealth = 3f;
+    private float previousHealth;
+
     private Vector3 MoveDirection = Vector3.zero;
     public Rigidbody rb;
 
@@ -25,6 +32,7 @@ public class FP_Movement : MonoBehaviour
     public AudioClip[] groundSounds;
     public AudioClip[] stairsSounds;
     public AudioSource heartbeat;
+    public AudioClip hitSound;
 
     private AudioSource audioSource;
     private string currentSurface;
@@ -65,6 +73,7 @@ public class FP_Movement : MonoBehaviour
     {
         PlayerControls = new PlayerFPSController();
         audioSource = GetComponent<AudioSource>();
+        health.healthValue = 3f;
     }
 
     void Start()
@@ -81,6 +90,7 @@ public class FP_Movement : MonoBehaviour
 
     void Update()
     {
+        Vignette vignette;
         Vector2 moveInput = Move.ReadValue<Vector2>();
         MoveDirection = new Vector3(moveInput.x, 0, moveInput.y);
 
@@ -110,10 +120,10 @@ public class FP_Movement : MonoBehaviour
             HandleLook();
             heartbeat.volume = 0f;
             heartbeat.pitch = 0f;
-            if (volume.profile.TryGet(out Vignette vignette))
+            if (volume.profile.TryGet(out vignette))
             {
                 vignette.intensity.value = 0f;
-                Debug.Log(vignette.intensity.value);
+                //Debug.Log(vignette.intensity.value);
             }
         }
         else
@@ -122,10 +132,10 @@ public class FP_Movement : MonoBehaviour
             Debug.Log(detectionRisk);
             heartbeat.volume = detectionRisk * 1.5f;
             heartbeat.pitch = detectionRisk;
-            if (volume.profile.TryGet(out Vignette vignette))
+            if (volume.profile.TryGet(out vignette))
             {
                 vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, detectionRisk, Time.deltaTime * 5f);
-                Debug.Log(vignette.intensity.value);
+                //Debug.Log(vignette.intensity.value);
             }
         }
 
@@ -143,6 +153,29 @@ public class FP_Movement : MonoBehaviour
         RotateCamera(lookInput);
 
         bobOffset = Mathf.Lerp(bobOffset, (isSprinting ? SprintBobAmount : walkBobAmount) * Mathf.Sin(Time.time * (isSprinting ? SprintBobSpeed : walkBobSpeed)), Time.deltaTime);
+
+        if(health.healthValue < maxHealth)
+        {
+            timeSinceLastDamage += Time.deltaTime;
+            if(timeSinceLastDamage > healDelay)
+            {
+                health.healthValue = Mathf.Min(health.healthValue + healRate * Time.deltaTime, maxHealth);
+            }
+        }
+
+        if(volume.profile.TryGet(out vignette))
+        {
+            float healthRatio = health.healthValue / maxHealth;
+            float targetIntensity = Mathf.Lerp(0.6f, 0.1f, healthRatio);
+
+            if(!isHidden)
+            {
+                vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetIntensity, Time.deltaTime * 5f);
+                Debug.Log($"Vignette Intensity: {vignette.intensity.value}");
+            }
+        }
+
+        HealthManagement();
     }
 
     private void FixedUpdate()
@@ -386,6 +419,30 @@ public class FP_Movement : MonoBehaviour
             isHidden = false;
             Debug.Log("Player exited hiding!");
         }
+    }
+
+    public void HealthManagement()
+    {
+        if(health.healthValue < previousHealth)
+        {
+            audioSource.pitch = Random.Range(0.9f, 1.1f);
+            audioSource.PlayOneShot(hitSound);
+        }
+        previousHealth = health.healthValue;
+
+        //Debug.Log(health.healthValue);
+        
+
+        if (health.healthValue <= 0f)
+        {
+            Destroy(gameObject);
+        }
+
+    }
+
+    public void ResetHealingTimer()
+    {
+        timeSinceLastDamage = 0f;
     }
 
     private void OnTriggerEnter(Collider other)
