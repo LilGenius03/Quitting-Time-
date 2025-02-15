@@ -90,7 +90,7 @@ public class Interactor_Script : MonoBehaviour
         }
     }
 
-    IEnumerator TextDisplayTime(float DisplayTime)
+    IEnumerator TextDisplayTime(float DisplayTime) 
     {
         KeyItemCollected.SetActive(true);
         yield return new WaitForSecondsRealtime(DisplayTime);
