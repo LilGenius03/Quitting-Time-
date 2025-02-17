@@ -123,11 +123,11 @@ public class MichaelAI_Script : MonoBehaviour
 
     void HandleAttack()
     {
-        if(m_Distance < AttackDistance)
+        if (m_Distance < AttackDistance)
         {
             m_Agent.isStopped = true;
-
-            if(!hasDamaged)
+        
+            if (!hasDamaged)
             {
                 health.healthValue -= health.damageValue;
                 hasDamaged = true;
@@ -135,17 +135,18 @@ public class MichaelAI_Script : MonoBehaviour
                 playerMovement.ResetHealingTimer();
             }
 
-            else
-            {
-                m_Agent.isStopped = false;
-                hasDamaged = false;
-            }
-
-            if(hasDamaged)
+            if (hasDamaged)
             {
                 damageTimer -= Time.deltaTime;
-                if (damageTimer <= 0) hasDamaged = false;
+                if (damageTimer <= 0)
+                {
+                    hasDamaged = false;
+                }
             }
+        }
+        else
+        {
+            m_Agent.isStopped = false;
         }
     }
 

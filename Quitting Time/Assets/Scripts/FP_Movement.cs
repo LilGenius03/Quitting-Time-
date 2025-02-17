@@ -130,7 +130,7 @@ public class FP_Movement : MonoBehaviour
         {
             HandleHidingLook();
             Debug.Log(detectionRisk);
-            heartbeat.volume = detectionRisk * 1.5f;
+            heartbeat.volume = detectionRisk * 1.25f;
             heartbeat.pitch = detectionRisk;
             if (volume.profile.TryGet(out vignette))
             {
