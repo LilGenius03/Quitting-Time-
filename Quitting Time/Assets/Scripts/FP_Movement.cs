@@ -11,6 +11,7 @@ public class FP_Movement : MonoBehaviour
 {
 
     public PlayerFPSController PlayerControls;
+    public MichaelAI_Script michaelAI;
     public int moveSpeed = 3;
     public int SprintSpeed = 6;
     public float SprintTime = 1.5f;
@@ -24,6 +25,7 @@ public class FP_Movement : MonoBehaviour
 
     private Vector3 MoveDirection = Vector3.zero;
     public Rigidbody rb;
+    public Collider playerCollider;
 
     public Transform playerCamera;
     public float lookSensitivity = 100f;
@@ -45,7 +47,7 @@ public class FP_Movement : MonoBehaviour
     //private InputAction interact;
     private InputAction sprint;
 
-    private bool isHidden;
+    public bool isHidden;
     private bool isSprinting;
     private float sprintTimer;
 
@@ -391,13 +393,32 @@ public class FP_Movement : MonoBehaviour
 
     private void EnterHiding()
     {
+        if (michaelAI.IsChasing)
+        {
+            Debug.Log("Can't hide while being Chased!");
+            return;
+        }
+
         if (isInHidingArea) 
         {
-            hidingSpot = Physics.OverlapSphere(transform.position, 2f, LayerMask.GetMask("HidingSpot"))[0].transform;
+            Collider[] hidingSpots = Physics.OverlapSphere(transform.position, 2f, LayerMask.GetMask("HidingSpot"));
+
+            if (hidingSpots.Length == 0)
+            {
+                Debug.LogWarning("No hiding spot found in range!");
+                return;
+            }
+
+            if(playerCollider != null)
+            {
+                playerCollider.enabled = false;
+            }
+
+            gameObject.layer = LayerMask.NameToLayer("Hidden");
+            hidingSpot = hidingSpots[0].transform;
             playerCamera.position = hidingSpot.position;
 
             rb.isKinematic = true;
-
             isHidden = true;
             detectionRisk = 0f;
             Debug.Log("Player is now hiding!");
@@ -406,13 +427,20 @@ public class FP_Movement : MonoBehaviour
         {
             Debug.Log("No hiding spot nearby!");
         }
+
     }
 
     private void ExitHiding()
     {
         if (isHidden)
         {
+            if (playerCollider != null)
+            {
+                playerCollider.enabled = true;
+            }
+
             playerCamera.localPosition = Vector3.zero;
+            gameObject.layer = LayerMask.NameToLayer("Default");
 
             rb.isKinematic = false;
 
