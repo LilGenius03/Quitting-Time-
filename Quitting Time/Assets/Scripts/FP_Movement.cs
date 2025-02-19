@@ -173,7 +173,7 @@ public class FP_Movement : MonoBehaviour
             if(!isHidden)
             {
                 vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, targetIntensity, Time.deltaTime * 5f);
-                Debug.Log($"Vignette Intensity: {vignette.intensity.value}");
+                //Debug.Log($"Vignette Intensity: {vignette.intensity.value}");
             }
         }
 
