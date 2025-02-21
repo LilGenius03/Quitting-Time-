@@ -11,7 +11,7 @@ public class JakeAI_Script : MonoBehaviour
     public Transform entryPoint;
     public float moveSpeed = 3f;
     public float detectionRange = 5f;
-    public float WaitingTime = 10f;
+    public float WaitingTime = 7f;
 
     [Header("References")]
     public AudioClip dialogueSound; 
@@ -20,30 +20,24 @@ public class JakeAI_Script : MonoBehaviour
     private NavMeshAgent agent;
     private bool hasSpoken = false;
     private bool isLeaving = false;
-    private bool hasEntered = false;
+    private Transform player; 
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
 
         transform.position = entryPoint.position;
-        agent.SetDestination(exitPoint.position);
+        agent.SetDestination(player.position);
         if (dialogueText != null) dialogueText.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (!hasEntered && Vector3.Distance(transform.position, entryPoint.position) < 0.5f)
+        if(!hasSpoken && PlayerInRange())
         {
-            hasEntered = true;
-            agent.SetDestination(exitPoint.position); 
-        }
-
-        if (!hasSpoken && PlayerInRange())
-        {
-            StartCoroutine(WaitBeforeLeaving());
-            Debug.Log("Player in Range");          
+            StartCoroutine(DeliverDialogueAndLeave());
         }
 
         if (isLeaving && agent.remainingDistance < 0.5f)
@@ -54,20 +48,27 @@ public class JakeAI_Script : MonoBehaviour
 
     bool PlayerInRange()
     {
-        return Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) < detectionRange;
+        return Vector3.Distance(transform.position, player.position) < detectionRange;
      
     }
 
-    IEnumerator WaitBeforeLeaving()
+    IEnumerator DeliverDialogueAndLeave()
     {
+        hasSpoken = true;
+
+        agent.isStopped = true;
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
+        transform.rotation = lookRotation;
         TriggerDialogue();
         yield return new WaitForSeconds(WaitingTime);
-        StartLeaving();
+        agent.isStopped = false;
+        agent.SetDestination(exitPoint.position);
+        isLeaving = true;
     }
 
         void TriggerDialogue()
     {
-        hasSpoken = true;
 
         if (dialogueSound != null)
             AudioSource.PlayClipAtPoint(dialogueSound, transform.position);
@@ -76,7 +77,7 @@ public class JakeAI_Script : MonoBehaviour
         {
             dialogueText.text = dialogue;
             dialogueText.gameObject.SetActive(true);
-            Invoke("HideText", 5f); 
+            Invoke("HideText", WaitingTime); 
         }
 
         Debug.Log(dialogue);
@@ -86,12 +87,6 @@ public class JakeAI_Script : MonoBehaviour
     {
         if (dialogueText != null)
             dialogueText.gameObject.SetActive(false);
-    }
-
-    void StartLeaving()
-    {
-        isLeaving = true;
-        agent.SetDestination(exitPoint.position);
     }
 
     void Despawn()

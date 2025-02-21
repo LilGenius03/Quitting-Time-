@@ -3161,7 +3161,7 @@ Transform:
   m_GameObject: {fileID: 582070457}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.17, y: 0, z: -33.23}
+  m_LocalPosition: {x: 11.43, y: 0, z: 1.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10392,7 +10392,7 @@ MonoBehaviour:
   exitPoint: {fileID: 582985296}
   entryPoint: {fileID: 582070458}
   moveSpeed: 3
-  detectionRange: 30
+  detectionRange: 5
   WaitingTime: 10
   dialogueSound: {fileID: 0}
   dialogueText: {fileID: 0}
