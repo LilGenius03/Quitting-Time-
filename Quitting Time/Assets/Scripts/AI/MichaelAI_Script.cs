@@ -35,6 +35,7 @@ public class MichaelAI_Script : MonoBehaviour
     private float m_Distance;
     private bool isChasing;
     private bool hasDamaged;
+    private Animator m_Animator;
     
     public PlayerHealthValue health;
     public FP_Movement playerMovement;
@@ -44,8 +45,10 @@ public class MichaelAI_Script : MonoBehaviour
     void Start()
     {
         m_Agent = GetComponent<NavMeshAgent>();
+        m_Animator = GetComponent<Animator>();  
         health.damageValue = 1f;
         m_Agent.speed = patrolSpeed;
+        //m_Animator.SetFloat("Speed", m_Agent.speed);
 
         if(patrolWaypoints.Length > 0)
         {
@@ -156,6 +159,8 @@ public class MichaelAI_Script : MonoBehaviour
     {
         IsChasing = true;
         m_Agent.speed = chaseSpeed;
+        m_Animator.SetBool("IsChasing", true);
+        m_Animator.SetBool("isHitting", false);
         m_Agent.SetDestination(PlayerTarget.position);
         m_Agent.isStopped = false;
     }
@@ -164,6 +169,8 @@ public class MichaelAI_Script : MonoBehaviour
     {
         IsChasing = false;
         m_Agent.speed = patrolSpeed;
+        m_Animator.SetBool("IsChasing", false);
+        m_Animator.SetBool("isHitting", false);
 
         if (m_Agent.remainingDistance < 1f && !m_Agent.pathPending)
         {
@@ -185,6 +192,7 @@ public class MichaelAI_Script : MonoBehaviour
         if (m_Distance < AttackDistance && !playerMovement.isHidden)
         {
             m_Agent.isStopped = true;
+            m_Animator.SetBool("isHitting", true);
         
             if (!hasDamaged)
             {
@@ -206,8 +214,17 @@ public class MichaelAI_Script : MonoBehaviour
         else
         {
             m_Agent.isStopped = false;
+            m_Animator.SetBool("isHitting", false);
         }
     }
+
+    /*void OnAnimatorMove()
+    {
+        if(m_Animator.GetBool("isHitting") == false)
+        {
+            m_Agent.speed = (m_Animator.deltaPosition / Time.deltaTime).magnitude;
+        }
+    }*/
 
     void OnDrawGizmos()
     {
